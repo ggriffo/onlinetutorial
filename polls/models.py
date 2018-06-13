@@ -26,6 +26,7 @@ class Choice(models.Model):
 	was_published_recently.short_description = 'Published recently?'
 
 class Product(models.Model):
+	display_on_store = models.BooleanField('Display product on store', default=True)
 	name = models.CharField(max_length=50)
 	description = models.CharField(max_length=200)
 	photo = models.ImageField('Product Picture', blank=True)
