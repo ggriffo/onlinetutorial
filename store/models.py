@@ -3,32 +3,47 @@ from django.db import models
 from django.utils import timezone
 from django.db import models
 
+class Brand(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
+class Customer(models.Model):
+    name = models.CharField('Name', max_length=50)
+    street_address = models.CharField('Street', max_length=50, blank=True)
+    city = models.CharField('City', max_length=50, blank=True)
+    details = models.CharField('Details', max_length=300, blank=True)
+    def __str__(self):
+        return self.name
+        
+class Store(models.Model):
+    name = models.CharField('Store', max_length=100)
+    def __str__(self):
+        return self.name
+
+class Shopping(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.PROTECT)
+    shopping_on = models.DateField('Shopping on', default=timezone.now)
+    dolar_quotation = models.DecimalField('Dolar Quotation', max_digits=5, decimal_places=2)
+    #def __str__(self):
+        #return self.shopping_on
+        
+class Order(models.Model):
+    order_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    order_when = models.DateField('Ordered When', default=timezone.now)
+    total = models.DecimalField('Order Total', default=0, max_digits=6, decimal_places=2)
+    
+    def __str__(self):
+        return self.order_to.name
+
 # Create your models here.
 class Product(models.Model):
-    display_on_store = models.BooleanField('Display product on store', default=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     photo = models.ImageField('Product Picture', blank=True)
-
-    BRANDS = (
-        ('CATANDJACK', 'Cat and Jack'),
-        ('CARTERS', 'Carters'),
-        ('OSHKOSH', 'Oshkosh'),
-        ('OSHKOSHG', 'Oshkosh Genuino'),
-        ('CENTRUM', 'Centrum'),
-        ('COLICCALM', 'Colic Calm'),
-        ('DESISTIN', 'Desistin'),
-        ('DISNEY', 'Disney'),
-        ('GAP', 'GAP'),
-        ('KIRKLAND', 'Kirkland'),
-        ('NATROL', 'Natrol'),
-        ('NATURESBOUNTY', 'Natures Bounty'),
-        ('OTHERS', 'Others'),
-    )
-    brand = models.CharField(max_length=15,
-        choices=BRANDS,
-        default='CATANDJACK')
-
+    brand = models.ForeignKey(Brand, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    
     GENRE = (
         ('F', 'Female'),
         ('M', 'Male'),
@@ -42,18 +57,13 @@ class Product(models.Model):
     def has_image(self):
         return self.photo
 
-class Store(models.Model):
-    name = models.CharField('Store', max_length=100)
-    def __str__(self):
-        return self.name
-
 class ShoppingProduct(models.Model):
+    shopping = models.ForeignKey(Shopping, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    dolar_price = models.DecimalField('Dolar Price', default=0, max_digits=6, decimal_places=2)
-    dolar_quotation = models.DecimalField('Dolar Quotation', default=0, max_digits=5, decimal_places=2)
-    real_price = models.DecimalField('Real Price', default=0, max_digits=6, decimal_places=2)
-    sales_price = models.DecimalField('Sales Price', default=0, max_digits=6, decimal_places=2)
-    quantity = models.IntegerField('Quantity', default=1)
+    dolar_price = models.DecimalField('Dolar Price', max_digits=6, decimal_places=2)
+    real_price = models.DecimalField('Real Price', max_digits=6, decimal_places=2)
+    sales_price = models.DecimalField('Sales Price', max_digits=6, decimal_places=2)
+    quantity = models.IntegerField('Quantity')
     SIZES = (
         ('NB', 'New Born'),
         ('03M', '0-3 Months'),
@@ -73,21 +83,13 @@ class ShoppingProduct(models.Model):
     size = models.CharField(max_length=3,
         choices=SIZES,
         default='NB')
-
-class Shopping(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.PROTECT)
-    shopping_on = models.DateField('Shopping on', default=timezone.now)
-    shopping_product = models.ForeignKey(ShoppingProduct, on_delete=models.PROTECT)
+    
     def __str__(self):
-            return self.shopping_on
-
-class Customer(models.Model):
-    name = models.CharField('Name', max_length=50)
-    street_address = models.CharField('Street', max_length=50, blank=True)
-    city = models.CharField('City', max_length=50, blank=True)
-    details = models.CharField('Details', max_length=300, blank=True)
-    def __str__(self):
-        return self.name
+        return self.product.name
+    
+    def save(self):
+        self.real_price = self.dolar_price * self.shopping.dolar_quotation
+        super(ShoppingProduct, self).save()
 
 class Sale(models.Model):
     sold_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
@@ -95,12 +97,4 @@ class Sale(models.Model):
     shopping_product = models.ForeignKey(ShoppingProduct, on_delete=models.PROTECT)
     total = models.DecimalField('Sale Total', default=0, max_digits=6, decimal_places=2)
     def __str__(self):
-            return self.sold_to
-
-class Order(models.Model):
-    order_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
-    order_when = models.DateField('Ordered When', default=timezone.now)
-    shopping_product = models.ForeignKey(ShoppingProduct, on_delete=models.PROTECT)
-    total = models.DecimalField('Order Total', default=0, max_digits=6, decimal_places=2)
-    def __str__(self):
-        return self.order_to
+        return self.sold_to

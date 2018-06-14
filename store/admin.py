@@ -1,8 +1,12 @@
 from django.contrib import admin
 
-from .models import Product, Store, Shopping, Customer, Sale, Order
+from .models import Product, Store, Shopping, Customer, Sale, Order, Brand, ShoppingProduct
 
 # Register your models here.
+class BrandAdmin(admin.ModelAdmin):
+    model = Brand
+    search_fields = ['name']
+
 class ProductAdmin(admin.ModelAdmin):
     model = Product
     search_fields = ['brand', 'name']
@@ -12,8 +16,18 @@ class StoreAdmin(admin.ModelAdmin):
     model = Store
     search_fields = ['name']
 
+class ShoppingProductInLine(admin.TabularInline):
+    model = ShoppingProduct
+    readonly_fields = ('real_price',)
+    extra = 3
+
+class ProductInLine(admin.TabularInline):
+    model = Product
+    extra = 3
+
 class ShoppingAdmin(admin.ModelAdmin):
     model = Shopping
+    inlines = [ShoppingProductInLine]
     search_fields = ['store', 'shopping_on']
     list_display = ('store', 'shopping_on')
 
@@ -28,7 +42,8 @@ class SaleAdmin(admin.ModelAdmin):
     list_display = ('sold_when', 'total')
 
 class OrderAdmin(admin.ModelAdmin):
-    model = Product
+    model = Order
+    inlines = [ProductInLine]
     search_fields = ['order_when', 'total']
     list_display = ('order_when', 'total')
 
@@ -38,3 +53,4 @@ admin.site.register(Shopping, ShoppingAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Sale, SaleAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Brand, BrandAdmin)
