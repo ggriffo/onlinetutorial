@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['onlinetutorial-env.zapmq5kjzn.us-west-2.elasticbeanstalk.com',
 
 INSTALLED_APPS = [
     'polls.apps.PollsConfig',
+    'store.apps.StoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_tables2',
-    'crudbuilder'
+    'bootstrap4',
 ]
 
 LOGIN_REQUIRED_FOR_CRUD = 'false'
