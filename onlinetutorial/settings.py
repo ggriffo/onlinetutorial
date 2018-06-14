@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'django_tables2',
-	'crudbuilder'
+    'django_tables2',
+    'crudbuilder'
 ]
 
 LOGIN_REQUIRED_FOR_CRUD = 'false'
