@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.utils import timezone
 from django import forms
 from datetime import datetime
-from dateutil import parser
 from .models import Product, Store, Shopping, Customer, Order, Brand, OrderItem, ShoppingProduct, OrderPayment
 
 # Register your models here.
@@ -76,7 +75,7 @@ class OrderPaymentInLine(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     model = Order
     inlines = [OrderItemInline, OrderPaymentInLine]
-    readonly_fields = ('order_total', 'total_paid')
+    readonly_fields = ('order_total', 'total_paid', 'payment_status', 'delivery_status')
     search_fields = ['order_to', 'order_when', 'order_total']
     list_display = ('order_to', 'order_when', 'order_total', 'order_sold', 'sold_when')
 

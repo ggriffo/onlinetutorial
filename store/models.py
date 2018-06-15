@@ -54,6 +54,21 @@ class Order(models.Model):
     order_when = models.DateField('Ordered When', default=timezone.now)
     order_sold = models.BooleanField('Sold?', default=False)
     sold_when = models.DateField('Sold When', blank=True, null=True)
+    
+    PAYMENT_STATUS = (
+        ('NP', 'Not paid'),
+        ('PP', 'Partial Paid'),
+        ('TP', 'Total Paid'),
+    )
+    payment_status = models.CharField(max_length=4, choices=PAYMENT_STATUS, default='NP')
+    
+    DELIVERY_STATUS = (
+        ('ND', 'Not delivered'),
+        ('PD', 'Partial Delivered'),
+        ('TD', 'Total Delivered'),
+    )
+    delivery_status = models.CharField(max_length=4, choices=DELIVERY_STATUS, default='ND')
+    
     order_total = models.DecimalField('Order Total', default=0, max_digits=6, decimal_places=2)
     total_paid = models.DecimalField('Paid Amount', default=0, max_digits=6, decimal_places=2, blank=True, null=True)
     def __str__(self):
