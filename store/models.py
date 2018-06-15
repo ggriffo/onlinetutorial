@@ -2,9 +2,15 @@ from django.db import models
 
 from django.utils import timezone
 from django.db import models
+from django.db.models import Avg, Count, Min, Sum
 
 class Brand(models.Model):
     name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
+
+class Store(models.Model):
+    name = models.CharField('Store', max_length=100)
     def __str__(self):
         return self.name
 
@@ -15,11 +21,6 @@ class Customer(models.Model):
     details = models.CharField('Details', max_length=300, blank=True)
     def __str__(self):
         return self.name
-        
-class Store(models.Model):
-    name = models.CharField('Store', max_length=100)
-    def __str__(self):
-        return self.name
 
 class Shopping(models.Model):
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
@@ -27,26 +28,17 @@ class Shopping(models.Model):
     dolar_quotation = models.DecimalField('Dolar Quotation', max_digits=5, decimal_places=2)
     #def __str__(self):
         #return self.shopping_on
-        
-class Order(models.Model):
-    order_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
-    order_when = models.DateField('Ordered When', default=timezone.now)
-    total = models.DecimalField('Order Total', default=0, max_digits=6, decimal_places=2)
-    
-    def __str__(self):
-        return self.order_to.name
 
-# Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     photo = models.ImageField('Product Picture', blank=True)
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    
+
     GENRE = (
         ('F', 'Female'),
         ('M', 'Male'),
+        ('O', 'Other'),
     )
     genre = models.CharField(max_length=2,
         choices=GENRE,
@@ -56,6 +48,42 @@ class Product(models.Model):
         return self.name
     def has_image(self):
         return self.photo
+
+class Order(models.Model):
+    order_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    order_when = models.DateField('Ordered When', default=timezone.now)
+    order_sold = models.BooleanField('Sold?', default=False)
+    sold_when = models.DateField('Sold When', blank=True, null=True)
+    order_total = models.DecimalField('Order Total', default=0, max_digits=6, decimal_places=2)
+    total_paid = models.DecimalField('Paid Amount', default=0, max_digits=6, decimal_places=2, blank=True, null=True)
+    def __str__(self):
+        return self.order_to.name
+
+class OrderPayment(models.Model):
+    PAYMENT_TYPE = (
+        ('CC', 'Credit Card'),
+        ('CA', 'Checking Account'),
+        ('PP', 'PayPal'),
+        ('OT', 'Other')
+    )
+    payment_type = models.CharField('Payment Type', choices=PAYMENT_TYPE, max_length=2)
+    payment_date = models.DateField('Payment Date')
+    payment_amount = models.DecimalField('Payment Amount', max_digits=6, decimal_places=2)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    detail = models.CharField('Obs', max_length=200)
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    delivered_date = models.DateField('Delivery Date', blank=True, null=True)
+    quantity = models.IntegerField('Quantity', blank=True, null=True)
+    unit_price = models.DecimalField('Unit Price', max_digits=6, decimal_places=2)
+    item_price = models.DecimalField('Order Item Price', max_digits=6, decimal_places=2)
+    def __str__(self):
+        return self.product.name
+    def save(self):
+        self.item_price = self.unit_price * self.quantity
+        super(OrderItem, self).save()
 
 class ShoppingProduct(models.Model):
     shopping = models.ForeignKey(Shopping, on_delete=models.CASCADE)
@@ -90,11 +118,3 @@ class ShoppingProduct(models.Model):
     def save(self):
         self.real_price = self.dolar_price * self.shopping.dolar_quotation
         super(ShoppingProduct, self).save()
-
-class Sale(models.Model):
-    sold_to = models.ForeignKey(Customer, on_delete=models.PROTECT)
-    sold_when = models.DateField('Sold when', default=timezone.now)
-    shopping_product = models.ForeignKey(ShoppingProduct, on_delete=models.PROTECT)
-    total = models.DecimalField('Sale Total', default=0, max_digits=6, decimal_places=2)
-    def __str__(self):
-        return self.sold_to

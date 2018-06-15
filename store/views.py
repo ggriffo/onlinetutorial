@@ -6,7 +6,7 @@ from django.utils import timezone
 
 # Create your views here.
 from polls.models import Choice, Question
-from .models import Product, Store, Shopping, Customer, Sale, Order
+from .models import Product, Store, Shopping, Customer, Order
 
 class IndexView(generic.ListView):
     template_name = 'store/index.html'
