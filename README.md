@@ -4,4 +4,4 @@ I've started this project by following the online tutorial (https://docs.djangop
 I am learning Python by developing a Web Store for my wife's business.
 <br>
 <br>
-This project is being deployed in my AWS Elastic Beanstalk.
+This project is being deployed in my AWS Elastic Beanstalk by automatically pulling the code from this repository
