@@ -25,7 +25,7 @@ SECRET_KEY = 'e1r_fr6)_n1bmm$8i#(*cjj0z!@a3ywn=qipo5u@x5luv@fl$1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cirandinha-store-dev.dvkd8q3ktz.us-east-1.elasticbeanstalk.com/', '127.0.0.1']
+ALLOWED_HOSTS = ['cirandinha-store-dev.dvkd8q3ktz.us-east-1.elasticbeanstalk.com', '127.0.0.1']
 
 
 # Application definition
@@ -106,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
