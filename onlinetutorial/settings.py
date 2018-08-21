@@ -25,7 +25,7 @@ SECRET_KEY = 'e1r_fr6)_n1bmm$8i#(*cjj0z!@a3ywn=qipo5u@x5luv@fl$1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cirandinhastore-dev.us-east-1.elasticbeanstalk.com', '127.0.0.1']
+ALLOWED_HOSTS = ['cirandinha-store-dev.dvkd8q3ktz.us-east-1.elasticbeanstalk.com/', '127.0.0.1']
 
 
 # Application definition
@@ -110,17 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'US/Pacific'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
