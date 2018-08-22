@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'onlinetutorial.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-if 'cirandinha-store' in os.environ:
+if 'aaxvgbudwkp7l9' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': '',
