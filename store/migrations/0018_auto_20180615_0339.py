@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='total_paid',
-            field=models.DecimalField(blank=True, decimal_places=2, default=0, max_digits=6, null=True, verbose_name='Paid Amount'),
+            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True, verbose_name='Paid Amount'),
         ),
         migrations.AddField(
             model_name='orderitem',
