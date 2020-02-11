@@ -9,7 +9,7 @@ cement==2.8.2
 certifi==2018.4.16
 chardet==3.0.4
 colorama==0.3.7
-Django==2.0.5
+Django==2.2.10
 django-bootstrap4==0.0.6
 django-crudbuilder==0.2.7
 django-debug-toolbar==1.9.1
